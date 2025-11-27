@@ -1,4 +1,4 @@
-# Atividade avaliativa do curso de Engenharia de Software, materia: Programação: Python
+# Sistema feito inteiramente em python de uma loja de brinquedos
 ## Projeto Play Toy
  O projeto é um gerenciador de estoque de uma loja de brinquedos infatis, que procura vender a um publico infanto juvenil.Tem como principais funções para o funcionamento do sistema: 
 - Cadastrar Brinquedos
