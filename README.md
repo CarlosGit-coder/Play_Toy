@@ -1,5 +1,4 @@
-# Sistema feito inteiramente em python de uma loja de brinquedos
-## Projeto Play Toy
+# Todo o sistema de uma loja de brinquedo feito em python
  O projeto é um gerenciador de estoque de uma loja de brinquedos infatis, que procura vender a um publico infanto juvenil.Tem como principais funções para o funcionamento do sistema: 
 - Cadastrar Brinquedos
 - Listar Brinquedos cadastrados
@@ -33,4 +32,6 @@ Para uma vizualização melhor nosso cliente tem como opção tanto a versão pe
 - Relatorios
 - Buscar
 - Sair
-<p>Cada uma delas seguindo a mesma logica das funções principais do sistema, podendo ser navegada pelo menu a esquerda </p>
+<p>Cada uma delas seguindo a mesma logica das funções principais do sistema, podendo ser navegada pelo menu a esquerda.
+</p>
+Para acessar a versão de navegador <a href="https://programas-python-rm6bgjyvbjgbcgxp98fybr.streamlit.app"> clique aqui</a>
