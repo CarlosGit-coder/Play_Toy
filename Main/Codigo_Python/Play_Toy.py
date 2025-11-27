@@ -23,8 +23,11 @@ def cadastrar_item():
     marca = input('Digite a marca do brinquedo: ')
     brinquedo['marca'] = marca
 
-    preço = input('Digite o preço do brinquedo: R$')
-    brinquedo['preço'] = preço
+    preco_input = input('Digite o preço do brinquedo: R$')
+    preco = verificar_preco(preco_input)
+    if preco is False:
+        return
+    brinquedo['preço'] = preco
 
     status = input('Esse brinquedo tem estoque (S/N)? ').lower()
     if status == 's':
@@ -94,9 +97,26 @@ def buscar_brinquedo_especifico():
         print('-------------------------------')
         for categoria, valor in item.items():
             if categoria == 'preço':
-                print(f'{categoria} : R$ {float(valor):.2f}')
+                print(f'{categoria} : R$ {valor:.2f}')
             else:
                 print(f'{categoria} : {valor}')
+
+def verificar_preco(preco):
+    try:
+        # troca vírgula por ponto caso o usuário digite "10,50"
+        preco = preco.replace(",", ".")
+        valor = float(preco)
+        if valor < 0:
+            print('-------------------------------')
+            print('Preço não pode ser negativo!')
+            print('Cadastro Interrompido! Tente Novamente.')
+            return False
+        return valor
+    except ValueError:
+        print('-------------------------------')
+        print('O preço deve ser um número! (ex: 10.90)')
+        print('Cadastro Interrompido! Tente Novamente.')
+        return False
 
 
 def listar_itens():
@@ -107,7 +127,7 @@ def listar_itens():
     for brinquedo in brinquedos:
         for categoria, resultado in brinquedo.items():
             if categoria == 'preço':
-                print(f'{categoria} : R$ {float(resultado.replace(",", ".")):.2f}')
+                print(f'{categoria} : R$ {resultado:.2f}')
             else:
                 print(f'{categoria} : {resultado}')
         print('-------------------------------')
@@ -123,7 +143,7 @@ def buscar_brinquedo(item_id):
                 print('Brinquedo encontrado!')
                 for categoria, resultado in brinquedo.items():
                     if categoria == 'preço':
-                        print(f'{categoria} : R$ {float(resultado.replace(",", ".")):.2f}')
+                        print(f'{categoria} : R$ {resultado:.2f}')
                     else:
                         print(f'{categoria} : {resultado}')
                 return brinquedo
@@ -162,6 +182,13 @@ def atualizar_item():
             return
         brinquedo['id'] = id_verificado
         atualizar_id_set()
+
+    elif categoria == 'preço':
+        novo_valor_verificado = verificar_preco(novo_valor)
+        if novo_valor_verificado is False:
+            return
+        brinquedo['preço'] = novo_valor_verificado
+
     else:
         brinquedo[categoria] = novo_valor
 
