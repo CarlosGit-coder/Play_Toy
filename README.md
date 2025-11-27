@@ -34,4 +34,4 @@ Para uma vizualização melhor nosso cliente tem como opção tanto a versão pe
 - Sair
 <p>Cada uma delas seguindo a mesma logica das funções principais do sistema, podendo ser navegada pelo menu a esquerda.
 </p>
-Para acessar a versão de navegador <a href="https://programas-python-rm6bgjyvbjgbcgxp98fybr.streamlit.app"> clique aqui</a>
+Para acessar a versão de navegador <a href="https://playtoy-jdxsicqhxvgmps9ztavcpr.streamlit.app"> clique aqui</a>
