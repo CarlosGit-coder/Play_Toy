@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: play-toy-app
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:?Configure SUPABASE_URL no arquivo .env}
+      SUPABASE_KEY: ${SUPABASE_KEY:?Configure SUPABASE_KEY no arquivo .env}
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    container_name: play-toy-redis
+    restart: unless-stopped
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  redis_data:
