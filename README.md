@@ -1,58 +1,110 @@
-# Todo o sistema de uma loja de brinquedo feito em python
- O projeto é um gerenciador de estoque de uma loja de brinquedos infatis, que procura vender a um publico infanto juvenil.Tem como principais funções para o funcionamento do sistema: 
-- Cadastrar Brinquedos
-- Listar Brinquedos cadastrados
-- Atualizar informações sobre brinquedo
-- Deletar brinquedos
-- Gerar relatorios expondo os brinquedos
-- Buscar brinquedo
-### Dados do Brinquedo
-| Nome da Estrutura | Tipo | Função |
-|-|-|-|
-| `ID` | INT |  Identificador unico |
-| `nome` | STR |Armazenar nome do produto|
-| `marca` |STR | De onde vem o produto |
-| `preco` |FLOAT | Demarcar valor do produto |
-| `status` |STR |Identificar se tem estoque do produto |
-### Exemplo de uso
+# Play Toy — Sistema de cadastro de brinquedos
 
-| ID | Nome | Marca | Preco | status |
-|-|-|-|-|-|
-| 100 | Boneca Baby Alive | Hasbro| 100.44 | Brinquedo com estoque |
-| 101 | Slime Puxa e Estica | Amoeba | 10.95 | Brinquedo com estoque|
-| 102 | Carro de brinquedo| Hotwheels | 19.99 | Brinquedo sem estoque |
+O Play Toy é um sistema simples para organizar o catálogo e a disponibilidade de uma loja de brinquedos. Ele ajuda a manter os dados dos produtos em um só lugar e permite consultar rapidamente quais itens estão ou não em estoque.
 
-## Tecnologias Utilizadas
-Para uma vizualização melhor nosso cliente tem como opção tanto a versão pelo navegador, que utiliza da biblioteca Python Streamlit , quanto a via terminal.
-### Telas da Versão de Navegador
-- Cadastrar
-- Listar
-- Atualizar
-- Remover
-- Relatorios
-- Buscar
-- Sair
-<p>Cada uma delas seguindo a mesma logica das funções principais do sistema, podendo ser navegada pelo menu a esquerda.
-</p>
-Para acessar a versão de navegador <a href="https://playtoy-jdxsicqhxvgmps9ztavcpr.streamlit.app"> clique aqui</a>
+## Objetivo e funcionalidades
 
-## Banco de dados e execução com Docker
+A aplicação oferece uma interface web feita com Streamlit e uma versão de terminal em Python. Na interface web é possível:
 
-A versão Streamlit salva os brinquedos no Supabase e usa Redis como cache de leitura (60 segundos). A versão de terminal em `Main/Codigo_Python/Play_Toy.py` continua guardando os dados apenas enquanto o processo está aberto. O `compose.yaml` inicia o Streamlit e um Redis local, com volume persistente para os dados do Redis.
+- cadastrar brinquedos com ID, nome, marca, preço e disponibilidade;
+- listar os produtos cadastrados;
+- buscar por ID, nome ou marca;
+- atualizar dados e disponibilidade;
+- remover produtos;
+- consultar relatórios de brinquedos por marca e por disponibilidade de estoque.
 
-### Criar e configurar o banco Supabase
+O cadastro valida IDs e preços não negativos. A versão web persiste os dados no Supabase. A versão de terminal (`Main/Codigo_Python/Play_Toy.py`) mantém os dados apenas na memória durante a execução e não compartilha o banco da versão web.
 
-1. Acesse o projeto Supabase correspondente à `SUPABASE_URL` e abra **SQL Editor → New query**.
-2. Abra [`querys.sql`](querys.sql), copie o conteúdo inteiro para a consulta e clique em **Run**. Isso cria a tabela `public.brinquedos`, aplica as permissões necessárias ao app e insere exemplos.
-3. Em **Project Settings → API** (ou **Data API**, dependendo da interface), copie a **Project URL** e a chave **publishable**. Use esses valores como `SUPABASE_URL` e `SUPABASE_KEY` no `.env` local. A chave publishable é destinada ao cliente; a política do SQL permite acesso anônimo de leitura e escrita para demonstração. Para dados reais, configure autenticação e políticas RLS mais restritas.
+## Tecnologias
 
-### Subir o container
+- Python 3.12
+- Streamlit para a interface web
+- Supabase (PostgreSQL e API) para persistência dos dados da versão web
+- Redis 7 para cache da lista de brinquedos
+- Docker e Docker Compose para executar a aplicação e o Redis em containers
 
-1. Instale Docker Desktop ou Docker Engine com o plugin Docker Compose.
-2. Na raiz do projeto, crie `.env` copiando `.env.example` e substitua os valores pelas credenciais do seu projeto Supabase. Não envie o `.env` ao Git.
-3. Execute `docker compose up --build -d`.
-4. Abra `http://localhost:8501` no navegador. Para acompanhar a aplicação, execute `docker compose logs -f app`; para desligar os serviços, `docker compose down`. O Redis mantém seus dados no volume `redis_data`.
+## Configuração e execução com Docker
 
-O Compose define `REDIS_URL=redis://redis:6379/0` para a aplicação. O hostname `redis` é resolvido dentro da rede Docker; não é necessário fornecer uma URL externa do Redis para esta configuração local.
+### Pré-requisitos
 
-Para rodar sem Docker, instale com `pip install -r Main/requirements.txt`, configure as variáveis de ambiente (incluindo `REDIS_URL`) e execute `streamlit run Main/app.py`. Não coloque chaves reais no repositório.
+- Docker Desktop ou Docker Engine com Docker Compose;
+- um projeto Supabase.
+
+### 1. Preparar o banco Supabase
+
+No painel do Supabase, abra **SQL Editor → New query**, copie o conteúdo de [`Main/supabase/schema.sql`](Main/supabase/schema.sql) e execute-o. O script cria `public.brinquedos`, concede permissões de CRUD e configura uma política RLS pública para a demonstração.
+
+Em **Project Settings → API** (ou **Data API**), copie a URL do projeto e a chave **publishable**. Configure-as no próximo passo. O schema permite acesso anônimo de leitura e escrita: use-o somente para demonstração. Para produção, implemente autenticação e políticas RLS que restrinjam o acesso.
+
+### 2. Configurar variáveis
+
+Na raiz do repositório, crie o arquivo `.env` a partir do exemplo:
+
+```bash
+cp .env.example .env
+```
+
+Edite `.env` e informe as credenciais do projeto:
+
+```dotenv
+SUPABASE_URL=https://seu-projeto.supabase.co
+SUPABASE_KEY=sua-chave-publishable
+```
+
+O Compose configura `REDIS_URL=redis://redis:6379/0` automaticamente. Não publique nem envie o `.env` ao Git.
+
+### 3. Iniciar
+
+Na raiz do projeto, execute:
+
+```bash
+docker compose up --build -d
+```
+
+Acesse [http://localhost:8501](http://localhost:8501). Para acompanhar os logs ou parar os containers:
+
+```bash
+docker compose logs -f app
+docker compose down
+```
+
+O Redis usa o volume Docker `redis_data`; os dados do catálogo, porém, ficam no Supabase.
+
+## Execução local sem Docker
+
+Requer Python 3.12 ou compatível. Instale as dependências:
+
+```bash
+pip install -r Main/requirements.txt
+```
+
+Defina `SUPABASE_URL` e `SUPABASE_KEY` no ambiente. Para usar também o cache, inicie um Redis e defina `REDIS_URL` com a URL de conexão. Por exemplo, em uma sessão Bash:
+
+```bash
+export SUPABASE_URL="https://seu-projeto.supabase.co"
+export SUPABASE_KEY="sua-chave-publishable"
+export REDIS_URL="redis://localhost:6379/0"
+streamlit run Main/app.py
+```
+
+Sem `REDIS_URL` ou se o Redis estiver indisponível, a aplicação continua consultando o Supabase diretamente. Para executar a versão de terminal:
+
+```bash
+python Main/Codigo_Python/Play_Toy.py
+```
+
+## Integração com Supabase
+
+A aplicação web lê `SUPABASE_URL` e `SUPABASE_KEY` do ambiente ou dos secrets do Streamlit e cria um cliente Supabase. As operações de cadastro, listagem, atualização e remoção usam a tabela `public.brinquedos`, definida em `Main/supabase/schema.sql`. Os dados persistem no PostgreSQL do Supabase entre execuções.
+
+O formato da tabela inclui `id`, `nome`, `marca`, `preco`, `disponibilidade` e `criado_em`. O script SQL habilita RLS, mas sua política concede acesso completo às funções `anon` e `authenticated`; por isso, serve apenas para ambiente de demonstração.
+
+## Uso do Redis
+
+O Redis é usado como cache de leitura na versão Streamlit. A função de listagem consulta a chave `play_toy:brinquedos`; se ela existir, retorna a lista em cache. Em caso de ausência, busca os dados no Supabase e guarda o resultado no Redis por 60 segundos. Depois de cadastrar, atualizar ou remover um item, a aplicação apaga essa chave para que a próxima listagem reflita os dados atuais.
+
+O cache reduz consultas repetidas ao banco e melhora o tempo de resposta da listagem. O Redis foi escolhido por ser um armazenamento em memória rápido, adequado a dados temporários que podem ser reconstruídos a partir do Supabase. Se o Redis não estiver configurado ou ficar indisponível, o sistema trata o cache como opcional e segue usando o banco diretamente. No Compose, o serviço Redis é iniciado junto com a aplicação e conectado pelo hostname `redis`.
+
+## Imagens da aplicação
+
+Este repositório não contém capturas de tela da interface até o momento. As telas disponíveis são **Cadastrar**, **Listar**, **Atualizar**, **Remover**, **Relatórios**, **Buscar** e **Sair**. A versão hospedada pode ser acessada [neste link do Streamlit](https://playtoy-jdxsicqhxvgmps9ztavcpr.streamlit.app).
