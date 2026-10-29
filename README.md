@@ -1,5 +1,9 @@
 # Play Toy — Sistema de cadastro de brinquedos
 
+## Vídeo do projeto
+
+[Assista ao vídeo do projeto](https://drive.google.com/file/d/1E3vKGhETiHkY98fElbTJr3yyNXwD6Ho1/view?usp=sharing)
+
 O Play Toy é um sistema simples para organizar o catálogo e a disponibilidade de uma loja de brinquedos. Ele ajuda a manter os dados dos produtos em um só lugar e permite consultar rapidamente quais itens estão ou não em estoque.
 
 ## Objetivo e funcionalidades
